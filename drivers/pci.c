@@ -56,6 +56,16 @@ DECLARE_UNNAMED_NODE( ob_pci_simple_node, 0, 2*sizeof(int) );
 
 const pci_arch_t *arch;
 
+/* The host MPIC's node, or 0 on a build without the macio driver */
+static phandle_t pci_host_mpic(void)
+{
+#ifdef CONFIG_DRIVER_MACIO
+    return ob_host_mpic();
+#else
+    return 0;
+#endif
+}
+
 #define IS_NOT_RELOCATABLE	0x80000000
 #define IS_PREFETCHABLE		0x40000000
 #define IS_ALIASED		0x20000000
@@ -1127,7 +1137,7 @@ int k2_uata_config_cb(const pci_config_t *config)
          * Apple's driver opens both and treats every DMA-source interrupt
          * as a DMA completion.
          */
-        phandle_t mpic = ob_host_mpic();
+        phandle_t mpic = pci_host_mpic();
         u32 props[4] = { 0x27, 1, 0x0d, 1 };
 
         if (mpic) {
@@ -1144,7 +1154,7 @@ int k2_uata_config_cb(const pci_config_t *config)
 /* The ports interrupt through their parent, which is on the MPIC */
 int k2_sata_config_cb(const pci_config_t *config)
 {
-        phandle_t mpic = ob_host_mpic();
+        phandle_t mpic = pci_host_mpic();
         u32 props[2] = { 0, 1 };
 
         if (mpic) {
@@ -2478,7 +2488,7 @@ int ob_pci_ht_init(const pci_arch_t *ht)
     host = ob_configure_pci_device(path, &bus, &mem_base, &io_base,
                                    0, 0, 0, NULL);
 
-    mpic = ob_host_mpic();
+    mpic = pci_host_mpic();
     PUSH(host);
     fword("child");
     bridge = POP();
