@@ -166,13 +166,14 @@ static const pci_arch_t known_arch[] = {
         .cfg_base = 0xf0000000,
         .cfg_len = 0x02000000,
         .host_pci_base = 0x0,
+        /* 512MB, regions 0x9-0xa: room for a 256MB frame-buffer BAR */
         .pci_mem_base = 0x90000000,
-        .mem_len = 0x10000000,
+        .mem_len = 0x20000000,
         .io_base = 0xf0000000,
         .io_len = 0x00800000,
         .host_ranges = {
             { .type = IO_SPACE, .parentaddr = 0, .childaddr = 0xf0000000, .len = 0x00800000 },
-            { .type = MEMORY_SPACE_32, .parentaddr = 0x90000000, .childaddr = 0x90000000, .len = 0x10000000 },
+            { .type = MEMORY_SPACE_32, .parentaddr = 0x90000000, .childaddr = 0x90000000, .len = 0x20000000 },
             { .type = 0, .parentaddr = 0, .childaddr = 0, .len = 0 }
          },
         .irqs = { 0x1b, 0x1c, 0x1d, 0x1e }
